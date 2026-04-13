@@ -1,5 +1,8 @@
 name: Build Desktop Installers
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 on:
   push:
     branches:
@@ -39,12 +42,12 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
           cache-dependency-path: app/package-lock.json
 
@@ -63,7 +66,7 @@ jobs:
           sudo apt-get install -y libarchive-tools
 
       - name: Install npm dependencies
-        run: npm ci
+        run: npm ci --no-audit --no-fund
 
       - name: Build desktop package
         run: npm run ${{ matrix.script }}
