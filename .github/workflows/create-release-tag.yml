@@ -1,0 +1,35 @@
+name: Create Release Tag
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Optional version to tag. Defaults to app/package.json version.
+        required: false
+        type: string
+
+jobs:
+  create-tag:
+    name: Create and push tag
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - name: Create and push version tag
+        run: node scripts/create-version-tag.mjs --push
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+
+      - name: Summarize next step
+        run: echo "Created release tag. The desktop build workflow will now run for that tag."

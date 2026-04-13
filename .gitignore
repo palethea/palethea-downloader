@@ -2,7 +2,10 @@
 /*
 !/.gitignore
 !/README.md
+!/release.py
 !/.github/
 !/.github/**
 !/app/
 !/app/**
+!/scripts/
+!/scripts/**

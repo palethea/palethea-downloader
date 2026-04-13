@@ -83,7 +83,8 @@ function getFfmpegExecutablePath() {
     return getBundledExecutablePath('ffmpeg')
   }
 
-  return ffmpegStatic || 'ffmpeg'
+  const vendoredFfmpegPath = getVendorExecutablePath('ffmpeg')
+  return fs.existsSync(vendoredFfmpegPath) ? vendoredFfmpegPath : 'ffmpeg'
 }
 
 function formatTargetSizeToken(targetSizeMb) {
