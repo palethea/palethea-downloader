@@ -1,0 +1,76 @@
+name: Build Desktop Installers
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Windows Installer
+            os: windows-latest
+            script: desktop:pack:win
+            artifact_name: palethea-windows-exe
+            artifact_path: app/release/*.exe
+          - name: Linux AppImage
+            os: ubuntu-latest
+            script: desktop:pack:linux
+            artifact_name: palethea-linux-appimage
+            artifact_path: app/release/*.AppImage
+          - name: macOS DMG
+            os: macos-latest
+            script: desktop:pack:mac
+            artifact_name: palethea-macos-dmg
+            artifact_path: app/release/*.dmg
+
+    defaults:
+      run:
+        working-directory: app
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust build output
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: app/native-backend
+
+      - name: Install Linux packaging dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libarchive-tools
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Build desktop package
+        run: npm run ${{ matrix.script }}
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: ${{ matrix.artifact_path }}
+          if-no-files-found: error

@@ -1,0 +1,8 @@
+# Keep the published repo focused on the desktop app.
+/*
+!/.gitignore
+!/README.md
+!/.github/
+!/.github/**
+!/app/
+!/app/**
