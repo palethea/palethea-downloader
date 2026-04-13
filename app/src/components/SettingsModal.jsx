@@ -1,0 +1,70 @@
+import { XIcon } from './Icons'
+
+export default function SettingsModal({ settings, onChange, onClose }) {
+  const update = (key, value) => onChange({ ...settings, [key]: value })
+
+  return (
+    <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
+      <div className="modal">
+        <div className="modal-header">
+          <h2>Settings</h2>
+          <button className="modal-close" onClick={onClose} aria-label="Close settings">
+            <XIcon />
+          </button>
+        </div>
+
+        <div className="settings-section">
+          <h3>Download Preferences</h3>
+          <div className="setting-row">
+            <span className="setting-label">Default Format</span>
+            <select
+              value={settings.defaultFormat}
+              onChange={(e) => update('defaultFormat', e.target.value)}
+            >
+              <option value="mp4">MP4 Video</option>
+              <option value="mp3">MP3 Audio</option>
+            </select>
+          </div>
+          <div className="setting-row">
+            <span className="setting-label">Default Quality</span>
+            <select
+              value={settings.defaultQuality}
+              onChange={(e) => update('defaultQuality', e.target.value)}
+            >
+              <option value="2160p">4K (2160p)</option>
+              <option value="1080p">Full HD (1080p)</option>
+              <option value="720p">HD (720p)</option>
+              <option value="480p">SD (480p)</option>
+              <option value="320kbps">320 kbps (Audio)</option>
+              <option value="128kbps">128 kbps (Audio)</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="settings-section">
+          <h3>Behavior</h3>
+          <div className="setting-row">
+            <span className="setting-label">Auto-download on completion</span>
+            <button
+              className={`toggle-switch ${settings.autoDownload ? 'on' : ''}`}
+              onClick={() => update('autoDownload', !settings.autoDownload)}
+              aria-label="Toggle auto-download"
+            >
+              <span className="toggle-knob" />
+            </button>
+          </div>
+          <div className="setting-row">
+            <span className="setting-label">Show notifications</span>
+            <button
+              className={`toggle-switch ${settings.notifications ? 'on' : ''}`}
+              onClick={() => update('notifications', !settings.notifications)}
+              aria-label="Toggle notifications"
+            >
+              <span className="toggle-knob" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
