@@ -3,7 +3,6 @@ const fs = require('fs')
 const os = require('os')
 const path = require('path')
 const { spawn } = require('child_process')
-const ffmpegStatic = require('ffmpeg-static')
 
 const DEV_SERVER_URL = process.env.VITE_DEV_SERVER_URL || 'http://127.0.0.1:5173'
 const API_BASE = 'http://127.0.0.1:43125'
@@ -712,7 +711,7 @@ function copyFileToClipboardViaPowerShell(filePath) {
 function buildBackendEnv() {
   const binDir = getBundledBinDir()
   const ytDlpPath = app.isPackaged ? getBundledExecutablePath('yt-dlp') : getVendorExecutablePath('yt-dlp')
-  const ffmpegDir = app.isPackaged ? binDir : path.dirname(require('ffmpeg-static'))
+  const ffmpegDir = app.isPackaged ? binDir : path.dirname(getVendorExecutablePath('ffmpeg'))
   const toolDir = app.isPackaged ? binDir : path.dirname(ytDlpPath)
   const existingPath = process.env.PATH || ''
 

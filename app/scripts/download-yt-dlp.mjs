@@ -1,9 +1,7 @@
-import fs from 'node:fs/promises'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { downloadBinary, getAppRoot } from './download-binary-utils.mjs'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const appRoot = path.resolve(__dirname, '..')
+const appRoot = getAppRoot(import.meta.url)
 const vendorDir = path.join(appRoot, 'vendor')
 const ytDlpTargets = {
   win32: {
@@ -28,18 +26,9 @@ if (!target) {
 
 const targetPath = path.join(vendorDir, target.fileName)
 
-await fs.mkdir(vendorDir, { recursive: true })
-
-const response = await fetch(target.url)
-if (!response.ok) {
-  throw new Error(`Failed to download yt-dlp: ${response.status} ${response.statusText}`)
-}
-
-const arrayBuffer = await response.arrayBuffer()
-await fs.writeFile(targetPath, Buffer.from(arrayBuffer))
-
-if (process.platform !== 'win32') {
-  await fs.chmod(targetPath, 0o755)
-}
+await downloadBinary({
+  url: target.url,
+  targetPath,
+})
 
 console.log(`Downloaded yt-dlp to ${targetPath}`)

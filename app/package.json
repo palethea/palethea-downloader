@@ -10,7 +10,9 @@
     "backend:dev": "cargo run --manifest-path native-backend/Cargo.toml",
     "backend:check": "cargo check --manifest-path native-backend/Cargo.toml",
     "backend:build": "cargo build --release --manifest-path native-backend/Cargo.toml",
-    "deps:download": "node scripts/download-yt-dlp.mjs",
+    "deps:download": "npm run deps:download:ffmpeg && npm run deps:download:yt-dlp",
+    "deps:download:ffmpeg": "node scripts/download-ffmpeg.mjs",
+    "deps:download:yt-dlp": "node scripts/download-yt-dlp.mjs",
     "dev:web": "vite",
     "dev": "vite",
     "dev:app": "npm run desktop:dev",
@@ -90,7 +92,6 @@
     "eslint": "^9.39.4",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
-    "ffmpeg-static": "^5.2.0",
     "globals": "^17.4.0",
     "vite": "^8.0.4",
     "wait-on": "^8.0.5"
