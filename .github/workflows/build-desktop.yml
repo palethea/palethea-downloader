@@ -51,6 +51,9 @@ jobs:
           cache: npm
           cache-dependency-path: app/package-lock.json
 
+      - name: Pin npm
+        run: npm install --global npm@11.6.2
+
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@stable
 
