@@ -16,4 +16,4 @@ This folder contains the Electron desktop app for Palethea.
 
 The GitHub workflow in the repo root uses these same scripts.
 
-For the simple guided release flow, run `python release.py` from the repo root. It can either push normally or bump the release version, run `cargo check`, commit, push, and create the release tag automatically. If you press Enter on the commit prompt, it uses a default message.
+For the simple guided release flow, run `python release.py` from the repo root. It can either push normally or bump the release version, run `cargo check`, commit, push, and create the release tag automatically. If you press Enter on the commit prompt, it uses a default message, and release commits skip the duplicate branch build so the tagged build can publish the real release files.

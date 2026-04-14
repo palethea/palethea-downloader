@@ -12,6 +12,7 @@ APP_PACKAGE_JSON = REPO_ROOT / 'app' / 'package.json'
 APP_PACKAGE_LOCK = REPO_ROOT / 'app' / 'package-lock.json'
 BACKEND_CARGO_TOML = REPO_ROOT / 'app' / 'native-backend' / 'Cargo.toml'
 BACKEND_CARGO_LOCK = REPO_ROOT / 'app' / 'native-backend' / 'Cargo.lock'
+SKIP_BRANCH_BUILD_MARKER = '[skip-desktop-branch-build]'
 
 VERSION_INPUT_RE = re.compile(
     r'^v?(?P<major>\d+)\.(?P<minor>\d+)(?:\.(?P<patch>\d+))?(?P<suffix>(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?)$'
@@ -252,12 +253,16 @@ def run_cargo_checks(*, dry_run: bool) -> None:
     )
 
 
-def commit_and_push(commit_message: str, *, dry_run: bool) -> None:
+def commit_and_push(commit_message: str, *, dry_run: bool, skip_branch_build: bool) -> None:
     run_command(['git', 'add', '-A'], dry_run=dry_run)
     if not dry_run and not has_staged_changes():
         raise ReleaseError('There is nothing to commit.')
 
-    run_command(['git', 'commit', '-m', commit_message], dry_run=dry_run)
+    commit_args = ['git', 'commit', '-m', commit_message]
+    if skip_branch_build:
+        commit_args.extend(['-m', SKIP_BRANCH_BUILD_MARKER])
+
+    run_command(commit_args, dry_run=dry_run)
     run_command(['git', 'push'], dry_run=dry_run)
 
 
@@ -299,7 +304,11 @@ def main() -> int:
 
         run_cargo_checks(dry_run=config.dry_run)
 
-        commit_and_push(config.commit_message, dry_run=config.dry_run)
+        commit_and_push(
+            config.commit_message,
+            dry_run=config.dry_run,
+            skip_branch_build=config.mode == 'release',
+        )
 
         if config.mode == 'release' and tag_name is not None:
             create_and_push_tag(tag_name, dry_run=config.dry_run)

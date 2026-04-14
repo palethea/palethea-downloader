@@ -24,6 +24,8 @@ When this project is pushed to GitHub, GitHub Actions will build installers auto
 
 If you want a release tag for GitHub Releases, run `python release.py` from the repo root and choose the new version option. It updates the release version files, runs `cargo check`, commits, pushes, and then creates and pushes a `v...` tag that triggers the installer build workflow automatically.
 
+Tagged builds now publish the real `.exe`, `.AppImage`, and `.dmg` files to the GitHub Release itself. The Actions artifacts page may still show zipped workflow artifacts, because that is how GitHub stores workflow artifacts internally.
+
 Download the one that matches your system:
 
 - Windows: `.exe`
@@ -88,6 +90,6 @@ You can open that folder directly from the Library page inside the app.
 
 The desktop app source is inside `app/`.
 
-For a prompt-driven local release flow, run `python release.py` from the repo root. The script runs `cargo check` automatically before pushing, and the commit prompt accepts Enter to use a default message.
+For a prompt-driven local release flow, run `python release.py` from the repo root. The script runs `cargo check` automatically before pushing, the commit prompt accepts Enter to use a default message, and release commits automatically skip the duplicate branch build so the tag build is the one that publishes release assets.
 
 If you only want to create a tag from the current `app/package.json` version without the guided Python flow, run `node scripts/create-version-tag.mjs --push` from the repo root.
