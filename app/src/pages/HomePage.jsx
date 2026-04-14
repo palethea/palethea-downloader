@@ -1,5 +1,7 @@
 import { BoltIcon, LockIcon, CheckIcon, DownloadIcon } from '../components/Icons'
 
+const homeHeroImageUrl = `${import.meta.env.BASE_URL}images/home_1.png`
+
 export default function HomePage() {
   return (
     <div className="page-wrapper">
@@ -15,7 +17,7 @@ export default function HomePage() {
           </div>
           <div className="info-hero-visual">
             <img 
-              src="/images/home_1.png" 
+              src={homeHeroImageUrl}
               alt="Installation Visual" 
               style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
             />

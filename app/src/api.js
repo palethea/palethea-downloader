@@ -1,4 +1,20 @@
-const BASE_URL = import.meta.env.VITE_MEDIA_API_BASE_URL || 'https://api.palethea.com/media-api'
+const LOCAL_MEDIA_API_BASE_URL = 'http://127.0.0.1:43125/media-api'
+const REMOTE_MEDIA_API_BASE_URL = 'https://api.palethea.com/media-api'
+
+function isDesktopRuntime() {
+  return typeof window !== 'undefined' && Boolean(window.paletheaDesktop?.isDesktop)
+}
+
+function getBaseUrl() {
+  const configuredBaseUrl = import.meta.env.VITE_MEDIA_API_BASE_URL
+  if (configuredBaseUrl) {
+    return configuredBaseUrl
+  }
+
+  return isDesktopRuntime() ? LOCAL_MEDIA_API_BASE_URL : REMOTE_MEDIA_API_BASE_URL
+}
+
+const BASE_URL = getBaseUrl()
 
 const ERROR_MESSAGES = {
   INVALID_URL: 'That URL doesn\u2019t look right. Please paste a valid YouTube, SoundCloud, Instagram, or TikTok link.',
@@ -146,7 +162,7 @@ export function getLibraryFileUrl(fileName) {
 }
 
 export function isDesktopApp() {
-  return typeof window !== 'undefined' && Boolean(window.paletheaDesktop?.isDesktop)
+  return isDesktopRuntime()
 }
 
 async function callDesktopBridge(methodName, ...args) {
